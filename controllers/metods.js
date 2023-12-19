@@ -25,7 +25,7 @@ export const crudUsuario = async (req,res) =>{
   if(opcion=='D') message.replace('insertado','eliminado')
   try {
     const respuesta = await da.obtenerDatos(`exec dbo.crudUsuario '${opcion}',${id},'${nombre}','${passhash}'`);
-    res.status(200).json({message: 'Consulta exitosa!!!', data: respuesta});
+    res.status(200).json({message, data: respuesta});
   } catch (error) {
     console.log('Error crudUsuario',error);
     res.status(500).json({message: 'Error consulta: , ' + error, data: []});
@@ -66,7 +66,7 @@ export const crudEspecialidad = async (req,res) =>{
   if(opcion=='D') message.replace('insertado','eliminado')
   try {
     const respuesta = await da.obtenerDatos(`exec dbo.crudEspecialidad '${opcion}',${id},'${descripcion}'`);
-    res.status(200).json({message: 'Consulta exitosa!!!', data: respuesta});
+    res.status(200).json({message, data: respuesta});
   } catch (error) {
     console.log('Error crudEspecialidad',error);
     res.status(500).json({message: 'Error consulta: , ' + error, data: []});
@@ -120,7 +120,7 @@ export const crudConsulta = async (req,res) =>{
   if(opcion=='D') message.replace('insertado','eliminado')
   try {
     const respuesta = await da.obtenerDatos(`exec dbo.crudConsulta '${opcion}',${id},'${fecha}','${horaInicio}','${horaFin}',${cupo},${idDoctor}`);
-    res.status(200).json({message: 'Consulta exitosa!!!', data: respuesta});
+    res.status(200).json({message, data: respuesta});
   } catch (error) {
     console.log('Error crudConsulta',error);
     res.status(500).json({message: 'Error consulta: , ' + error, data: []});
@@ -146,7 +146,7 @@ export const crudPaciente = async (req,res) =>{
   if(opcion=='D') message.replace('insertado','eliminado')
   try {
     const respuesta = await da.obtenerDatos(`exec dbo.crudPaciente '${opcion}',${id},'${nombre}','${apellidos}','${cedula}','${direccion}','${telefono}','${numeroSeguro}','${mutualidad}','${fechaNacimiento}'`);
-    res.status(200).json({message: 'Consulta exitosa!!!', data: respuesta});
+    res.status(200).json({message, data: respuesta});
   } catch (error) {
     console.log('Error crudPaciente',error);
     res.status(500).json({message: 'Error consulta: , ' + error, data: []});
@@ -172,7 +172,7 @@ export const crudReserva = async (req,res) =>{
   if(opcion=='D') message.replace('insertado','eliminado')
   try {
     const respuesta = await da.obtenerDatos(`exec dbo.crudReserva '${opcion}',${id},${idConsulta},${idPaciente},${estado}`);
-    res.status(200).json({message: 'Consulta exitosa!!!', data: respuesta});
+    res.status(200).json({message, data: respuesta});
   } catch (error) {
     console.log('Error crudReserva',error);
     res.status(500).json({message: 'Error consulta: , ' + error, data: []});

@@ -21,8 +21,8 @@ export const crudUsuario = async (req,res) =>{
   const {opcion,id,nombre,password} = req.query
   const passhash = crypto.createHash("md5").update(password).digest("hex")
   let message = 'Registro insertado satisfactoriamente!';
-  if(opcion=='U') message.replace('insertado','actualizado')
-  if(opcion=='D') message.replace('insertado','eliminado')
+  if(opcion=='U') message = message.replace('insertado','actualizado')
+  if(opcion=='D') message = message.replace('insertado','eliminado')
   try {
     const respuesta = await da.obtenerDatos(`exec dbo.crudUsuario '${opcion}',${id},'${nombre}','${passhash}'`);
     res.status(200).json({message, data: respuesta});
@@ -62,8 +62,8 @@ export const crudEspecialidad = async (req,res) =>{
   console.log('crudEspecialidad',req.query);
   const {opcion,id,descripcion} = req.query
   let message = 'Registro insertado satisfactoriamente!';
-  if(opcion=='U') message.replace('insertado','actualizado')
-  if(opcion=='D') message.replace('insertado','eliminado')
+  if(opcion=='U') message = message.replace('insertado','actualizado')
+  if(opcion=='D') message = message.replace('insertado','eliminado')
   try {
     const respuesta = await da.obtenerDatos(`exec dbo.crudEspecialidad '${opcion}',${id},'${descripcion}'`);
     res.status(200).json({message, data: respuesta});
@@ -77,7 +77,8 @@ export const listarDoctor = async (req,res) =>{
   //ejemplo de uso acceso a datos como API
   console.log('listarDoctores',req.query);
   try {
-    const respuesta = await da.obtenerDatos('select * from Doctor');
+    const respuesta = await da.obtenerDatos(`select d.*,e.Descripcion Especialidad 
+    from Doctor d join Especialidad e on d.IdEspecialidad =e.IdEspecialidad`);
     res.status(200).json({message: 'Consulta exitosa!!!', data: respuesta});
   } catch (error) {
     console.log('Error listarDoctor',error);
@@ -90,8 +91,8 @@ export const crudDoctor = async (req,res) =>{
   console.log('crudDoctor',req.query);
   const {opcion,id,nombre,idEspecialidad,direccion,telefono,fechaNacimiento} = req.query
   let message = 'Registro insertado satisfactoriamente!';
-  if(opcion=='U') message.replace('insertado','actualizado')
-  if(opcion=='D') message.replace('insertado','eliminado')
+  if(opcion=='U') message = message.replace('insertado','actualizado')
+  if(opcion=='D') message = message.replace('insertado','eliminado')
   try {
     const respuesta = await da.obtenerDatos(`exec dbo.crudDoctor '${opcion}',${id},'${nombre}',${idEspecialidad},'${direccion}','${telefono}','${fechaNacimiento}'`);
     res.status(200).json({message, data: respuesta});
@@ -104,7 +105,8 @@ export const crudDoctor = async (req,res) =>{
 export const listarConsulta = async (req,res) =>{
   console.log('listarConsulta',req.query);
   try {
-    const respuesta = await da.obtenerDatos('select * from Consulta');
+    const respuesta = await da.obtenerDatos(`select c.*,d.Nombre Doctor
+    from Consulta c join Doctor d on c.IdDoctor =d.IdDoctor `);
     res.status(200).json({message: 'Consulta exitosa!!!', data: respuesta});
   } catch (error) {
     console.log('Error listarConsulta',error);
@@ -116,8 +118,8 @@ export const crudConsulta = async (req,res) =>{
   console.log('crudConsulta',req.query);
   const {opcion,id,fecha,horaInicio,horaFin,cupo,idDoctor} = req.query
   let message = 'Registro insertado satisfactoriamente!';
-  if(opcion=='U') message.replace('insertado','actualizado')
-  if(opcion=='D') message.replace('insertado','eliminado')
+  if(opcion=='U') message = message.replace('insertado','actualizado')
+  if(opcion=='D') message = message.replace('insertado','eliminado')
   try {
     const respuesta = await da.obtenerDatos(`exec dbo.crudConsulta '${opcion}',${id},'${fecha}','${horaInicio}','${horaFin}',${cupo},${idDoctor}`);
     res.status(200).json({message, data: respuesta});
@@ -142,8 +144,8 @@ export const crudPaciente = async (req,res) =>{
   console.log('crudPaciente',req.query);
   const {opcion,id,nombre,apellidos,cedula,direccion,telefono,numeroSeguro,mutualidad,fechaNacimiento} = req.query
   let message = 'Registro insertado satisfactoriamente!';
-  if(opcion=='U') message.replace('insertado','actualizado')
-  if(opcion=='D') message.replace('insertado','eliminado')
+  if(opcion=='U') message = message.replace('insertado','actualizado')
+  if(opcion=='D') message = message.replace('insertado','eliminado')
   try {
     const respuesta = await da.obtenerDatos(`exec dbo.crudPaciente '${opcion}',${id},'${nombre}','${apellidos}','${cedula}','${direccion}','${telefono}','${numeroSeguro}','${mutualidad}','${fechaNacimiento}'`);
     res.status(200).json({message, data: respuesta});
@@ -156,7 +158,14 @@ export const crudPaciente = async (req,res) =>{
 export const listarReserva = async (req,res) =>{
   console.log('listarReserva',req.query);
   try {
-    const respuesta = await da.obtenerDatos('select * from Reserva');
+    const respuesta = await da.obtenerDatos(`select r.*,c.Fecha,c.HoraInicio,c.HoraFin,c.Cupo,d.Nombre Doctor
+    ,d.IdDoctor,CONCAT(p.Nombre,' ',p.Apellidos) Paciente,p.Cedula
+    ,p.Direccion,p.Telefono,p.NumeroSeguro,p.Mutualidad
+    ,p.FechaNacimiento,e.IdEspecialidad,e.Descripcion Especialidad
+    from Reserva r join Consulta c on r.IdConsulta =c.IdConsulta
+    join Doctor d on d.IdDoctor =c.IdDoctor 
+    join Paciente p on p.IdPaciente = r.IdPaciente
+    join Especialidad e on e.IdEspecialidad = d.IdEspecialidad`);
     res.status(200).json({message: 'Consulta exitosa!!!', data: respuesta});
   } catch (error) {
     console.log('Error listarReserva',error);
@@ -168,8 +177,8 @@ export const crudReserva = async (req,res) =>{
   console.log('crudReserva',req.query);
   const {opcion,id,idConsulta,idPaciente,estado} = req.query
   let message = 'Registro insertado satisfactoriamente!';
-  if(opcion=='U') message.replace('insertado','actualizado')
-  if(opcion=='D') message.replace('insertado','eliminado')
+  if(opcion=='U') message = message.replace('insertado','actualizado')
+  if(opcion=='D') message = message.replace('insertado','eliminado')
   try {
     const respuesta = await da.obtenerDatos(`exec dbo.crudReserva '${opcion}',${id},${idConsulta},${idPaciente},${estado}`);
     res.status(200).json({message, data: respuesta});

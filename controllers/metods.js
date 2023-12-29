@@ -105,8 +105,9 @@ export const crudDoctor = async (req,res) =>{
 export const listarConsulta = async (req,res) =>{
   console.log('listarConsulta',req.query);
   try {
-    const respuesta = await da.obtenerDatos(`select c.*,d.Nombre Doctor
-    from Consulta c join Doctor d on c.IdDoctor =d.IdDoctor `);
+    const respuesta = await da.obtenerDatos(`select c.*,d.Nombre Doctor, e.Descripcion Especialidad
+    from Consulta c join Doctor d on c.IdDoctor =d.IdDoctor
+    join Especialidad e on e.IdEspecialidad = d.IdEspecialidad`);
     res.status(200).json({message: 'Consulta exitosa!!!', data: respuesta});
   } catch (error) {
     console.log('Error listarConsulta',error);
@@ -162,7 +163,7 @@ export const listarReserva = async (req,res) =>{
     ,d.IdDoctor,CONCAT(p.Nombre,' ',p.Apellidos) Paciente,p.Cedula
     ,p.Direccion,p.Telefono,p.NumeroSeguro,p.Mutualidad
     ,p.FechaNacimiento,e.IdEspecialidad,e.Descripcion Especialidad
-    from Reserva r join Consulta c on r.IdConsulta =c.IdConsulta
+    from Reserva r join Consulta c on r.IdConsulta =c.IdConsulta and r.Estado=1
     join Doctor d on d.IdDoctor =c.IdDoctor 
     join Paciente p on p.IdPaciente = r.IdPaciente
     join Especialidad e on e.IdEspecialidad = d.IdEspecialidad`);

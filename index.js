@@ -16,11 +16,9 @@ const app = express();
 
 //MIDDLEWARE
 app.use(morgan('dev'));
-app.use(cors({
-  origin: ['http://127.0.0.1:5173']
-}));
+app.use(cors());
 app.use(express.json());
-app.use(seguridad.autenticarToken);
+// app.use(seguridad.autenticarToken);
 
 //ROUTES
 app.use(serviciosRoutes);

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
    export const autenticarToken = (req, res, next)=> {
     if(req.url.includes('login')){
       next();
-      return false;
+      return true;
     } 
     const token = req.headers['authorization'];
     if (token) {
